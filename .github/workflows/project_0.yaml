@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: ${{ contains(github.event.pull_request.message, 'project_0') }}
+    if: ${{ contains(github.event.pull_request.title, 'project_0') }}
     steps:
       - uses: actions/checkout@master
 
