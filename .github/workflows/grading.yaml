@@ -89,4 +89,8 @@ jobs:
           python check_error.py < /tmp/output
 
       - name: "close pull request"
-        uses: superbrothers/close-pull-request@v3
+        uses: peter-evans/close-pull@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          comment: "Auto close pull request after checks"
+          delete-branch: false
