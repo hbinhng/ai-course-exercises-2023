@@ -1,4 +1,4 @@
-name: P4-MachineLearning
+name: project_6_machinelearning
 on:
   pull_request:
     branches: [main]
@@ -25,7 +25,7 @@ jobs:
 
       - name: "test machine learning"
         run: |
-          cd machinelearning
+          cd project_6
           python autograder.py | python ../check_grade.py > /tmp/output
           cat /tmp/output
 
@@ -40,7 +40,7 @@ jobs:
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
-            --data "{ \"body\": \"P4-MachineLearning $COMMENT\" }" \
+            --data "{ \"body\": \"project_6 $COMMENT\" }" \
             $URL
 
       - name: "check error"
