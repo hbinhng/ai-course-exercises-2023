@@ -87,7 +87,35 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = []
+    track = []
+    initialState = problem.getStartState()
+    
+    def internalRecursive(state):
+        if problem.isGoalState(state):
+            return state
+        
+        print(state)
+        
+        visited.append(state)
+        
+        successors = problem.getSuccessors(state)
+        
+        for (nextState, action, _) in successors:
+            if nextState not in visited:
+                track.append(action)
+                result = internalRecursive(nextState)
+                
+                if result is not None:
+                    return result
+                
+                track.pop()
+                
+        return None
+            
+    internalRecursive(initialState)
+    
+    return track
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
