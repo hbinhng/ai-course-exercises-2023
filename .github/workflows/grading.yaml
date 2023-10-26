@@ -28,6 +28,7 @@ jobs:
         run: |
           cd project_0
           python autograder.py | python ../check_grade.py > /tmp/output
+          COMMENT=$(cat /tmp/output)
           curl \
             -X POST \
             -H "Content-Type: application/json" \
@@ -45,6 +46,7 @@ jobs:
         run: |
           cd project_1
           python autograder.py | python ../check_grade.py > /tmp/output
+          COMMENT=$(cat /tmp/output)
           curl \
             -X POST \
             -H "Content-Type: application/json" \
@@ -62,6 +64,7 @@ jobs:
         run: |
           cd project_2
           python autograder.py | python ../check_grade.py > /tmp/output
+          COMMENT=$(cat /tmp/output)
           curl \
             -X POST \
             -H "Content-Type: application/json" \
@@ -79,12 +82,13 @@ jobs:
         run: |
           cd project_6
           python autograder.py | python ../check_grade.py > /tmp/output
+          COMMENT=$(cat /tmp/output)
           curl \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
             --data "{ \"body\": \"project_6 $COMMENT\" }" \
-            $URL
+            $URL > /dev/null
           cd ..
           python check_error.py < /tmp/output
 
