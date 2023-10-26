@@ -1,0 +1,88 @@
+name: grading
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  run:
+    runs-on: ubuntu-20.04
+    env:
+      OS: ubuntu-20.04
+      PYTHON: "3.6"
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: 3.6
+
+      - name: "test tutorial"
+        if: ${{ contains(github.event.pull_request.title, 'project_0') }}
+        env:
+          URL: ${{ github.event.pull_request.comments_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd project_0
+          python autograder.py | python ../check_grade.py > /tmp/output
+          curl \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data "{ \"body\": \"project_0 $COMMENT\" }" \
+            $URL
+          python check_error.py < /tmp/output
+
+      - name: "test search"
+        if: ${{ contains(github.event.pull_request.title, 'project_1') }}
+        env:
+          URL: ${{ github.event.pull_request.comments_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd project_1
+          python autograder.py | python ../check_grade.py > /tmp/output
+          curl \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data "{ \"body\": \"project_1 $COMMENT\" }" \
+            $URL
+          python check_error.py < /tmp/output
+
+      - name: "test logic"
+        if: ${{ contains(github.event.pull_request.title, 'project_2') }}
+        env:
+          URL: ${{ github.event.pull_request.comments_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd project_2
+          python autograder.py | python ../check_grade.py > /tmp/output
+          curl \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data "{ \"body\": \"project_2 $COMMENT\" }" \
+            $URL
+          python check_error.py < /tmp/output
+
+      - name: "test machine learning"
+        if: ${{ contains(github.event.pull_request.title, 'project_6') }}
+        env:
+          URL: ${{ github.event.pull_request.comments_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd project_6
+          python autograder.py | python ../check_grade.py > /tmp/output
+          curl \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            --data "{ \"body\": \"project_6 $COMMENT\" }" \
+            $URL
+          python check_error.py < /tmp/output
+
+      - name: "close pull request"
+        uses: superbrothers/close-pull-request@v3
