@@ -204,12 +204,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         
         successors = problem.getSuccessors(currentState)
         
-        for (nextState, action, cost) in successors:
+        for (nextState, action, _) in successors:
             if nextState not in visited:
-                realCost = problem.getCostOfActions(trace) + cost
+                nextTrace = trace + [action]
+                realCost = problem.getCostOfActions(nextTrace)
                 estimatedCost = realCost + heuristic(nextState, problem)
                 
-                queue.push((nextState, trace + [action]), estimatedCost)
+                queue.push((nextState, nextTrace), estimatedCost)
         
     return []
 
