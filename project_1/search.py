@@ -184,17 +184,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     
-    realCosts = {}
-    estimatedCosts = {}
     visited = []
     queue = util.PriorityQueue()
     
     initialState = problem.getStartState()
     
-    realCosts[initialState] = 0
-    estimatedCosts[initialState] = heuristic(initialState, problem)
-    
-    queue.push((initialState, []), estimatedCosts[initialState])
+    queue.push((initialState, []), heuristic(initialState, problem))
     
     while not queue.isEmpty():
         (currentState, trace) = queue.pop()
@@ -211,13 +206,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         
         for (nextState, action, cost) in successors:
             if nextState not in visited:
-                realCost = realCosts[currentState] + cost
-                realCosts[nextState] = min(
-                    realCosts[nextState] if nextState in realCosts else 2147483647,
-                    realCost
-                )
+                realCost = problem.getCostOfActions(trace) + cost
                 estimatedCost = realCost + heuristic(nextState, problem)
-                estimatedCosts[nextState] = estimatedCost
                 
                 queue.push((nextState, trace + [action]), estimatedCost)
         
