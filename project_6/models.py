@@ -83,7 +83,7 @@ class RegressionModel(object):
             nn.Parameter(1, 1)
         ]
         
-        self.batch_size = 0
+        self.batchSize = 0
         self.learningRate = -0.05
 
     def run(self, x):
@@ -96,8 +96,8 @@ class RegressionModel(object):
             A node with shape (batch_size x 1) containing predicted y-values
         """
         "*** YOUR CODE HERE ***"        
-        if self.batch_size == 0:
-            self.batch_size = x.data.shape[0]
+        if self.batchSize == 0:
+            self.batchSize = x.data.shape[0]
         
         layer1 = nn.ReLU(nn.AddBias(nn.Linear(x, self.weights[0]), self.biases[0]))
         layer2 = nn.ReLU(nn.AddBias(nn.Linear(layer1, self.weights[1]), self.biases[1]))
@@ -127,7 +127,7 @@ class RegressionModel(object):
         while True:
             totalLoss = 0
             
-            for (x, y) in dataset.iterate_once(self.batch_size):
+            for (x, y) in dataset.iterate_once(self.batchSize):
                 loss = self.get_loss(x, y)
                 
                 totalLoss += nn.as_scalar(loss)
