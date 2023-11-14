@@ -29,7 +29,7 @@ jobs:
           cd project_0
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
-          curl \
+          curl -s \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
@@ -47,7 +47,7 @@ jobs:
           cd project_1
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
-          curl \
+          curl -s \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
@@ -65,7 +65,7 @@ jobs:
           cd project_2
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
-          curl \
+          curl -s \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
@@ -83,7 +83,7 @@ jobs:
           cd project_6
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
-          curl \
+          curl -s \
             -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: token $GITHUB_TOKEN" \
