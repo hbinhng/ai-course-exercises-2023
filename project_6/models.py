@@ -71,6 +71,20 @@ class RegressionModel(object):
     def __init__(self):
         # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
+        self.weights = [
+            nn.Parameter(1, 100),
+            nn.Parameter(100, 100),
+            nn.Parameter(100, 1)
+        ]
+        
+        self.biases = [
+            nn.Parameter(1, 100),
+            nn.Parameter(1, 100),
+            nn.Parameter(1, 1)
+        ]
+        
+        self.batch_size = 0
+        self.learningRate = -0.05
 
     def run(self, x):
         """
@@ -81,7 +95,15 @@ class RegressionModel(object):
         Returns:
             A node with shape (batch_size x 1) containing predicted y-values
         """
-        "*** YOUR CODE HERE ***"
+        "*** YOUR CODE HERE ***"        
+        if self.batch_size == 0:
+            self.batch_size = x.data.shape[0]
+        
+        layer1 = nn.ReLU(nn.AddBias(nn.Linear(x, self.weights[0]), self.biases[0]))
+        layer2 = nn.ReLU(nn.AddBias(nn.Linear(layer1, self.weights[1]), self.biases[1]))
+        layer3 = nn.AddBias(nn.Linear(layer2, self.weights[2]), self.biases[2])
+        
+        return layer3
 
     def get_loss(self, x, y):
         """
@@ -94,12 +116,35 @@ class RegressionModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
+        return nn.SquareLoss(self.run(x), y)
 
     def train(self, dataset):
         """
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+        
+        while True:
+            totalLoss = 0
+            
+            for (x, y) in dataset.iterate_once(self.batch_size):
+                loss = self.get_loss(x, y)
+                
+                totalLoss += nn.as_scalar(loss)
+                
+                origins = [
+                    self.weights[0], self.biases[0],
+                    self.weights[1], self.biases[1],
+                    self.weights[2], self.biases[2],
+                ]
+                
+                gradients = nn.gradients(loss, origins)
+                
+                for i in range(len(origins)):
+                    origins[i].update(gradients[i], self.learningRate)
+                    
+            if totalLoss / dataset.x.shape[0] < 0.02:
+                break
 
 class DigitClassificationModel(object):
     """
