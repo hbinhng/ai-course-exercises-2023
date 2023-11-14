@@ -163,6 +163,21 @@ class DigitClassificationModel(object):
     def __init__(self):
         # Initialize your model parameters here
         "*** YOUR CODE HERE ***"
+        
+        self.weights = [
+            nn.Parameter(784, 100),
+            nn.Parameter(100, 60),
+            nn.Parameter(60, 10)
+        ]
+        
+        self.biases = [
+            nn.Parameter(1, 100),
+            nn.Parameter(1, 60),
+            nn.Parameter(1, 10)
+        ]
+        
+        self.batchSize = 0
+        self.learningRate = -0.01
 
     def run(self, x):
         """
@@ -179,6 +194,14 @@ class DigitClassificationModel(object):
                 (also called logits)
         """
         "*** YOUR CODE HERE ***"
+        if self.batchSize == 0:
+            self.batchSize = x.data.shape[0]
+        
+        layer1 = nn.ReLU(nn.AddBias(nn.Linear(x, self.weights[0]), self.biases[0]))
+        layer2 = nn.ReLU(nn.AddBias(nn.Linear(layer1, self.weights[1]), self.biases[1]))
+        layer3 = nn.AddBias(nn.Linear(layer2, self.weights[2]), self.biases[2])
+        
+        return layer3
 
     def get_loss(self, x, y):
         """
@@ -194,12 +217,36 @@ class DigitClassificationModel(object):
         Returns: a loss node
         """
         "*** YOUR CODE HERE ***"
+        return nn.SoftmaxLoss(self.run(x), y)
 
     def train(self, dataset):
         """
         Trains the model.
         """
         "*** YOUR CODE HERE ***"
+        
+        while True:
+            for (x, y) in dataset.iterate_once(self.batchSize):
+                loss = self.get_loss(x, y)
+                
+                origins = [
+                    self.weights[0], self.biases[0],
+                    self.weights[1], self.biases[1],
+                    self.weights[2], self.biases[2],
+                ]
+                
+                gradients = nn.gradients(loss, origins)
+                
+                for i in range(len(origins)):
+                    origins[i].update(gradients[i], self.learningRate)
+                    
+            accuracy = dataset.get_validation_accuracy()
+            
+            if accuracy > 0.95:
+                self.learningRate /= 2
+                    
+            if dataset.get_validation_accuracy() > 0.97:
+                break
 
 class LanguageIDModel(object):
     """
