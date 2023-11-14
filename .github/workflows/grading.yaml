@@ -63,6 +63,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd project_2
+          pip install pycosat
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
           curl -s \
@@ -81,6 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd project_6
+          pip install numpy matplotlib
           python autograder.py | python ../check_grade.py > /tmp/output
           COMMENT=$(cat /tmp/output)
           curl -s \
